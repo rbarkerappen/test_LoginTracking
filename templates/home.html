@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block head %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+	<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7wQgpZMtq-af4XWaDIXRNW1TR9B7-iKs"></script>
+	<script>
+
+		function initMap() {
+			var options = {
+				center: {
+					lat: 0,
+					lng: 0,
+				},
+				zoom: 1,
+				minZoom: 1,
+			};
+	
+			var map = new google.maps.Map($("#map").get(0), options);
+
+			$("#logins tr.entry").each(function(ev) {
+				var row = $(this);
+				var lat = row.find("td.lat").text();
+				var lng = row.find("td.lng").text();
+
+				if(!lat || !lng)
+					return;
+
+				lat = parseFloat(lat);
+				lng = parseFloat(lng);
+
+				var position = new google.maps.LatLng(lat, lng);
+
+				var marker = new google.maps.Marker({
+					position: position,
+					map: map
+				});
+			});
+		}
+
+		$(document).ready(function(ev) {
+			google.maps.event.addDomListener(window, 'load', initMap);
+		});
+	</script>
+{% endblock head %}
+
+{% block body %}
+
+	<p>You are logged in [<a href="{{ url_for('logout') }}">logout</a>]</p>
+
+	<h2>Details</h2>
+
+	<table>
+		<tr>
+			<td>User ID:</td>
+			<td>{{ current_user.userID }}</td>
+		</tr>
+		<tr>
+			<td>Email Address:</td>
+			<td>{{ current_user.emailAddress }}</td>
+		</tr>
+	</table>
+
+	<h2>Logins</h2>
+
+	<table id="logins">
+		<tr>
+			<th>ID</th>
+			<th>IP</th>
+			<th>Country</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+			<th>When</th>
+		</tr>
+		{% for login in current_user.logins %}
+		<tr class="entry">
+			<td>{{ login.loginID }}</td>
+			<td>{{ login.ip }}</td>
+			<td>{{ login.country.name }}</td>
+			<td class="lat">{{ login.latitude}}</td>
+			<td class="lng">{{ login.longitude }}</td>
+			<td>{{ login.happened }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	
+	<div id="map"></div>
+
+{% endblock body %}

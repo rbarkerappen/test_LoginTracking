@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+    
+    <h2>Register</h2>
+    
+    {% for message in form.emailAddress.errors %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+   
+    {% for message in form.password.errors %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+   
+    <form action="{{ url_for('register') }}" method=post>
+        <table>
+            <tr>
+                <td>{{ form.emailAddress.label }}:</td>
+                <td>{{ form.emailAddress }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label }}:</td>
+                <td>{{ form.password }}</td>
+            <tr>
+                <td colspan="2">{{ form.submit }}</td>
+            </tr>
+    </form>
+
+{% endblock %}
